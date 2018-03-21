@@ -49,10 +49,10 @@ def extract_data(df, in_dim, out_dim):
 	y_train = train[:, in_dim:]
 
 	x_valid = result[int(train_size):int(train_size) + valid_size, :in_dim]
-	y_valid = result[int(train_size):int(train_size) + valid_size, in_dim]
+	y_valid = result[int(train_size):int(train_size) + valid_size, in_dim:]
 
 	x_test = result[int(train_size) + valid_size:, :in_dim]
-	y_test = result[int(train_size) + valid_size:, in_dim]
+	y_test = result[int(train_size) + valid_size:, in_dim:]
 
 	x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
 	x_valid = np.reshape(x_valid, (x_valid.shape[0], x_valid.shape[1], 1))
