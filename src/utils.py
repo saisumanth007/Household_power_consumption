@@ -52,9 +52,14 @@ def extract_data(df, in_dim, out_dim):
 
 	result = np.array(result)
 
-	train_size = int(len(dataset) * 0.98)
-	test_size = int((len(dataset) - train_size) * 0.5)
-	valid_size = len(dataset) - train_size - test_size
+	# train_size = int(len(dataset) * 0.98)
+	# test_size = int((len(dataset) - train_size) * 0.5)
+	# valid_size = len(dataset) - train_size - test_size
+
+	train_size = 20000
+	# valid_size = 6286
+	valid_size = 6670
+
 	train = result[:int(train_size), :]
 	x_train = train[:, :in_dim]
 	y_train = train[:, in_dim:]
@@ -69,7 +74,8 @@ def extract_data(df, in_dim, out_dim):
 	x_valid = np.reshape(x_valid, (x_valid.shape[0], x_valid.shape[1], 1))
 	x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
 
-	return result, x_train, y_train, x_valid,  y_valid, x_test, y_test
+	return x_train, y_train, x_valid,  y_valid, x_test, y_test
+
 
 def extract_data_hourly(df, in_dim, out_dim):
 
@@ -107,7 +113,8 @@ def extract_data_hourly(df, in_dim, out_dim):
 
 
 	train_size = 20000
-	valid_size = 6671
+	# valid_size = 6286
+	valid_size = 6670
 
 	x_train, y_train, x_valid, y_valid, x_test, y_test = [], [], [], [], [], []
 
