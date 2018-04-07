@@ -83,11 +83,11 @@ def squeeze_arch(in_dim, out_dim):
 	y = squeeze_excite_block(y)
 	y_1 = add([y, ip])
 
-	y = Conv1D(256, 5, padding='same', kernel_initializer='he_uniform')(y_1)
+	y = Conv1D(128, 5, padding='same', kernel_initializer='he_uniform')(y_1)
 	y = BatchNormalization()(y)
 	y = Activation('relu')(y)
-	y_2 = squeeze_excite_block(y)
-	# y_2 = add([y, y_1])
+	y = squeeze_excite_block(y)
+	y_2 = add([y, y_1])
 
 	y = Conv1D(128, 3, padding='same', kernel_initializer='he_uniform')(y_2)
 	y = BatchNormalization()(y)
