@@ -81,7 +81,7 @@ def squeeze_arch(in_dim, out_dim):
 	y = BatchNormalization()(y)
 	y = Activation('relu')(y)
 	y = squeeze_excite_block(y)
-	y = add([y, ip)
+	y = add([y, ip])
 
 	y = Conv1D(256, 5, padding='same', kernel_initializer='he_uniform')(y)
 	y = BatchNormalization()(y)
