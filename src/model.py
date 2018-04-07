@@ -52,3 +52,53 @@ def Conv1d_test_1(in_dim, out_dim):
 
 	return model
 
+def squeeze_excite_block(input):
+    ''' Create a squeeze-excite block
+    Args:
+        input: input tensor
+        filters: number of output filters
+        k: width factor
+    Returns: a keras tensor
+    '''
+    filters = input._keras_shape[-1] # channel_axis = -1 for TF
+
+    se = GlobalAveragePooling1D()(input)
+    se = Reshape((1, filters))(se)
+    se = Dense(filters // 16,  activation='relu', kernel_initializer='he_normal', use_bias=False)(se)
+    se = Dense(filters, activation='sigmoid', kernel_initializer='he_normal', use_bias=False)(se)
+    se = multiply([input, se])
+    return se
+
+def squeeze_arch(in_dim, out_dim):
+	ip = Input(shape=(in_dim, 1))
+
+	# x = Masking()(ip)
+	x = LSTM(8)(ip)
+	x = Dropout(0.8)(x)
+
+	# y = Permute((2, 1))(ip)
+	y = Conv1D(128, 8, padding='same', kernel_initializer='he_uniform')(ip)
+	y = BatchNormalization()(y)
+	y = Activation('relu')(y)
+	y = squeeze_excite_block(y)
+
+	y = Conv1D(256, 5, padding='same', kernel_initializer='he_uniform')(y)
+	y = BatchNormalization()(y)
+	y = Activation('relu')(y)
+	y = squeeze_excite_block(y)
+
+	y = Conv1D(128, 3, padding='same', kernel_initializer='he_uniform')(y)
+	y = BatchNormalization()(y)
+	y = Activation('relu')(y)
+
+	y = GlobalAveragePooling1D()(y)
+
+	x = concatenate([x, y])
+	dense1 = Dense(20, activation = 'relu')(x)
+	dense2 = Dense(20, activation = 'relu')(dense1)
+	out = Dense(out_dim)(dense2)
+
+	model = Model(inputs = ip,outputs = out)
+	model.compile(optimizer="adam",loss="mae")
+
+	return model

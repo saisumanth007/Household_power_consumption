@@ -10,42 +10,42 @@ in_dim, out_dim = 60, 60
 x_train, y_train, x_valid,  y_valid, x_test, y_test = extract_data(df, in_dim, out_dim)
 
 ## Basic LSTM
-class DataGenerator(object):
-    def __init__(self, batch_size = 32, shuffle = True):
-        self.batch_size = batch_size
-        self.shuffle = shuffle
+# class DataGenerator(object):
+#     def __init__(self, batch_size = 32, shuffle = True):
+#         self.batch_size = batch_size
+#         self.shuffle = shuffle
 
-    def generate(self, x, y):
-        while 1:
+#     def generate(self, x, y):
+#         while 1:
         
-            imax = int(len(x)/self.batch_size)
-            for i in range(imax):
-                inp = x[i*batch_size:(i+1)*batch_size]
-                out = y[i*batch_size:(i+1)*batch_size]
-                yield inp, out
+#             imax = int(len(x)/self.batch_size)
+#             for i in range(imax):
+#                 inp = x[i*batch_size:(i+1)*batch_size]
+#                 out = y[i*batch_size:(i+1)*batch_size]
+#                 yield inp, out
 
 
-batch_size = 100
-params = {'batch_size': 100,
-          'shuffle': True}
+# batch_size = 100
+# params = {'batch_size': 100,
+#           'shuffle': True}
 
-train = np.concatenate([x_train, x_valid])
-lab = np.concatenate([y_train, y_valid])
+# train = np.concatenate([x_train, x_valid])
+# lab = np.concatenate([y_train, y_valid])
 
-training_generator = DataGenerator(**params).generate(train, lab)
-# validation_generator = DataGenerator(**params).generate(x_valid, y_valid)
+# training_generator = DataGenerator(**params).generate(train, lab)
+# # validation_generator = DataGenerator(**params).generate(x_valid, y_valid)
 
-# earlyStopping = EarlyStopping(monitor='val_loss', patience = 5)
+# # earlyStopping = EarlyStopping(monitor='val_loss', patience = 5)
 
-model = Basic_LSTM(in_dim, out_dim)
+# model = Basic_LSTM(in_dim, out_dim)
 
+# # model.fit_generator(generator = training_generator,
+# #                     steps_per_epoch = len(x_train)//batch_size,
+# #                     validation_data = validation_generator,
+# #                     validation_steps = len(x_valid)//batch_size, epochs = 20, callbacks = [earlyStopping])
 # model.fit_generator(generator = training_generator,
-#                     steps_per_epoch = len(x_train)//batch_size,
-#                     validation_data = validation_generator,
-#                     validation_steps = len(x_valid)//batch_size, epochs = 20, callbacks = [earlyStopping])
-model.fit_generator(generator = training_generator,
-                    steps_per_epoch = len(train)//batch_size, 
-                    epochs = 100)
+#                     steps_per_epoch = len(train)//batch_size, 
+#                     epochs = 100)
 
 ##Random Forest
 # x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1]))
@@ -122,3 +122,49 @@ model.fit_generator(generator = training_generator,
 # 	for j in xrange(60):
 # 		out += (ans[i][j] - y_test[i][j])**2
 # print math.sqrt(out/(len(ans) * 60))
+
+##Squeeze Arch 
+
+class DataGenerator(object):
+    def __init__(self, batch_size = 32, shuffle = True):
+        self.batch_size = batch_size
+        self.shuffle = shuffle
+
+    def generate(self, x, y):
+        while 1:
+        
+            imax = int(len(x)/self.batch_size)
+            for i in range(imax):
+                inp = x[i*batch_size:(i+1)*batch_size]
+                out = y[i*batch_size:(i+1)*batch_size]
+                yield inp, out
+
+
+batch_size = 100
+params = {'batch_size': 100,
+          'shuffle': True}
+
+train = np.concatenate([x_train, x_valid])
+lab = np.concatenate([y_train, y_valid])
+
+training_generator = DataGenerator(**params).generate(train, lab)
+# validation_generator = DataGenerator(**params).generate(x_valid, y_valid)
+
+# earlyStopping = EarlyStopping(monitor='val_loss', patience = 5)
+
+model = squeeze_arch(in_dim, out_dim)
+
+# model.fit_generator(generator = training_generator,
+#                     steps_per_epoch = len(x_train)//batch_size,
+#                     validation_data = validation_generator,
+#                     validation_steps = len(x_valid)//batch_size, epochs = 20, callbacks = [earlyStopping])
+model.fit_generator(generator = training_generator,
+                    steps_per_epoch = len(train)//batch_size, 
+                    epochs = 100)
+
+ans = model.predict(x_test)
+out = 0
+for i in xrange(len(ans)):
+	for j in xrange(60):
+		out += (ans[i][j] - y_test[i][j])**2
+print math.sqrt(out/(len(ans) * 60))
