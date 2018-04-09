@@ -106,6 +106,6 @@ def squeeze_arch(in_dim, out_dim):
 	out = Dense(out_dim)(dense2)
 
 	model = Model(inputs = ip,outputs = out)
-	model.compile(optimizer="adam",loss="mae")
+	model.compile(optimizer="adam",loss="mean_squared_error")
 
 	return model
