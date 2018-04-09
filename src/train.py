@@ -160,7 +160,7 @@ model = squeeze_arch(in_dim, out_dim)
 #                     validation_steps = len(x_valid)//batch_size, epochs = 20, callbacks = [earlyStopping])
 model.fit_generator(generator = training_generator,
                     steps_per_epoch = len(train)//batch_size, 
-                    epochs = 100)
+                    epochs = 50)
 
 ans = model.predict(x_test)
 out = 0
