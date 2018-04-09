@@ -73,8 +73,12 @@ def squeeze_arch(in_dim, out_dim):
 	ip = Input(shape=(in_dim, 1))
 
 	# x = Masking()(ip)
-	x = LSTM(8)(ip)
-	x = Dropout(0.8)(x)
+	# x = LSTM(60)(ip)
+	# x = Dropout(0.8)(x)
+	x = LSTM(60, input_shape=(in_dim, 1), return_sequences=True)(ip)
+	x = Dropout(0.2)(x)
+	x = LSTM(100,return_sequences=False)(x)
+	x = Dropout(0.2)(x)
 
 	# y = Permute((2, 1))(ip)
 	y = Conv1D(128, 8, padding='same', kernel_initializer='he_uniform')(ip)
