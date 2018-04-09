@@ -6,7 +6,7 @@ import math
 from tqdm import tqdm
 
 def preprocess():
-	df = pd.read_csv("../../household_power_consumption.txt", sep = ";")
+	df = pd.read_csv("../data/household_power_consumption.txt", sep = ";")
 	df = df.replace("?", np.nan)
 	df = df.ffill()               # Replace "?" with previous valid values
 
