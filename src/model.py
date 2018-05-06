@@ -102,10 +102,8 @@ def squeeze_arch(in_dim, out_dim):
 
 	x = concatenate([x, y])
 	dense1 = Dense(100, activation = 'relu')(x)
-	drop1 = Dropout(0.2)(dense1)
-	dense2 = Dense(100, activation = 'relu')(drop1)
-	drop2 = Dropout(0.2)(dense2)
-	dense3 = Dense(80, activation = 'relu')(drop2)
+	dense2 = Dense(100, activation = 'relu')(dense1)
+	dense3 = Dense(80, activation = 'relu')(dense2)
 	out = Dense(out_dim)(dense3)
 
 	model = Model(inputs = ip,outputs = out)
