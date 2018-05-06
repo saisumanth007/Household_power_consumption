@@ -81,37 +81,32 @@ def squeeze_arch(in_dim, out_dim):
 	x = Dropout(0.2)(x)
 
 	# y = Permute((2, 1))(ip)
-
-	y = Conv1D(128, 10, padding='same', kernel_initializer='he_uniform')(ip)
+	y = Conv1D(128, 8, padding='same', kernel_initializer='he_uniform')(ip)
 	y = BatchNormalization()(y)
 	y = Activation('relu')(y)
 	y = squeeze_excite_block(y)
 	y_1 = add([y, ip])
 
-	y = Conv1D(128, 8, padding='same', kernel_initializer='he_uniform')(y_1)
+	y = Conv1D(128, 5, padding='same', kernel_initializer='he_uniform')(y_1)
 	y = BatchNormalization()(y)
 	y = Activation('relu')(y)
 	y = squeeze_excite_block(y)
 	y_2 = add([y, y_1])
 
-	y = Conv1D(128, 5, padding='same', kernel_initializer='he_uniform')(y_2)
+	y = Conv1D(128, 3, padding='same', kernel_initializer='he_uniform')(y_2)
 	y = BatchNormalization()(y)
 	y = Activation('relu')(y)
-	y = squeeze_excite_block(y)
-	y_3 = add([y, y_2])
-
-	y = Conv1D(128, 3, padding='same', kernel_initializer='he_uniform')(y_3)
-	y = BatchNormalization()(y)
-	y = Activation('relu')(y)
-	y = add([y, y_3])
+	y = add([y, y_2])
 
 	y = GlobalAveragePooling1D()(y)
 
 	x = concatenate([x, y])
 	dense1 = Dense(100, activation = 'relu')(x)
-	dense2 = Dense(100, activation = 'relu')(dense1)
-	dense3 = Dense(80, activation = 'relu')(dense2)
-	out = Dense(out_dim)(dense2)
+	drop1 = Dropout(0.2)(dense1)
+	dense2 = Dense(100, activation = 'relu')(drop1)
+	drop2 = Dropout(0.2)(dense2)
+	dense3 = Dense(80, activation = 'relu')(drop2)
+	out = Dense(out_dim)(dense3)
 
 	model = Model(inputs = ip,outputs = out)
 	model.compile(optimizer="adam",loss="mean_squared_error")
