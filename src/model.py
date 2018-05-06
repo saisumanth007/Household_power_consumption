@@ -77,6 +77,8 @@ def squeeze_arch(in_dim, out_dim):
 	# x = Dropout(0.8)(x)
 	x = LSTM(60, input_shape=(in_dim, 1), return_sequences=True)(ip)
 	x = Dropout(0.2)(x)
+	x = LSTM(80,return_sequences=True)(x)
+	x = Dropout(0.2)(x)
 	x = LSTM(100,return_sequences=False)(x)
 	x = Dropout(0.2)(x)
 
