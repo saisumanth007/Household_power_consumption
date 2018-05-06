@@ -77,28 +77,33 @@ def squeeze_arch(in_dim, out_dim):
 	# x = Dropout(0.8)(x)
 	x = LSTM(60, input_shape=(in_dim, 1), return_sequences=True)(ip)
 	x = Dropout(0.2)(x)
-	x = LSTM(80,return_sequences=True)(x)
-	x = Dropout(0.2)(x)
 	x = LSTM(100,return_sequences=False)(x)
 	x = Dropout(0.2)(x)
 
 	# y = Permute((2, 1))(ip)
-	y = Conv1D(128, 8, padding='same', kernel_initializer='he_uniform')(ip)
+
+	y = Conv1D(128, 10, padding='same', kernel_initializer='he_uniform')(ip)
 	y = BatchNormalization()(y)
 	y = Activation('relu')(y)
 	y = squeeze_excite_block(y)
 	y_1 = add([y, ip])
 
-	y = Conv1D(128, 5, padding='same', kernel_initializer='he_uniform')(y_1)
+	y = Conv1D(128, 8, padding='same', kernel_initializer='he_uniform')(y_1)
 	y = BatchNormalization()(y)
 	y = Activation('relu')(y)
 	y = squeeze_excite_block(y)
 	y_2 = add([y, y_1])
 
-	y = Conv1D(128, 3, padding='same', kernel_initializer='he_uniform')(y_2)
+	y = Conv1D(128, 5, padding='same', kernel_initializer='he_uniform')(y_2)
 	y = BatchNormalization()(y)
 	y = Activation('relu')(y)
-	y = add([y, y_2])
+	y = squeeze_excite_block(y)
+	y_3 = add([y, y_2])
+
+	y = Conv1D(128, 3, padding='same', kernel_initializer='he_uniform')(y_3)
+	y = BatchNormalization()(y)
+	y = Activation('relu')(y)
+	y = add([y, y_3])
 
 	y = GlobalAveragePooling1D()(y)
 
