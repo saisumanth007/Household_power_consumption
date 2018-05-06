@@ -104,7 +104,7 @@ def squeeze_arch(in_dim, out_dim):
 	dense1 = Dense(100, activation = 'relu')(x)
 	dense2 = Dense(100, activation = 'relu')(dense1)
 	dense3 = Dense(80, activation = 'relu')(dense2)
-	out = Dense(out_dim)(dense3)
+	out = Dense(out_dim)(dense2)
 
 	model = Model(inputs = ip,outputs = out)
 	model.compile(optimizer="adam",loss="mean_squared_error")
